@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script>
- function rta() {
-            window.open('https://wa.me/message/YOUR_WHATSAPP_NUMBER', '_blank');
-        }
-  </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>2025 AI Stock Analysis System</title>
@@ -147,8 +142,8 @@
 
         .ai-advantages {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
             margin: 40px 0;
         }
 
@@ -425,7 +420,7 @@
             }
             
             .ai-advantages {
-                grid-template-columns: 1fr;
+                gap: 10px;
             }
         }
 
@@ -594,8 +589,8 @@
                 return;
             }
             
-            if (!/^[A-Z]{1,5}$/.test(stockSymbol)) {
-                alert('Please enter a valid stock symbol (1-5 letters)');
+            if (!/^[A-Z0-9]{1,6}$/.test(stockSymbol)) {
+                alert('Please enter a valid stock symbol (1-6 characters)');
                 return;
             }
             
@@ -609,20 +604,62 @@
             
             modal.style.display = 'flex';
             
+            // Fast progress simulation - complete in 2-3 seconds
+            const totalDuration = 2500; // 2.5 seconds total
+            const progressSteps = [
+                { target: 15, duration: 300 },
+                { target: 35, duration: 400 },
+                { target: 55, duration: 500 },
+                { target: 75, duration: 600 },
+                { target: 90, duration: 400 },
+                { target: 100, duration: 300 }
+            ];
+            
+            let currentStep = 0;
             let progress = 0;
-            const interval = setInterval(() => {
-                progress += 2;
-                progressBar.style.width = progress + '%';
-                progressText.textContent = progress + '%';
+            let startTime = Date.now();
+            
+            function updateProgress() {
+                const elapsed = Date.now() - startTime;
                 
-                if (progress >= 100) {
-                    clearInterval(interval);
+                if (elapsed >= totalDuration || currentStep >= progressSteps.length) {
+                    // Ensure we reach 100%
+                    progressBar.style.width = '100%';
+                    progressText.textContent = '100%';
+                    
                     setTimeout(() => {
                         modal.style.display = 'none';
                         showReportModal();
-                    }, 300);
+                    }, 200);
+                    return;
                 }
-            }, 40);
+                
+                // Find current target based on elapsed time
+                let targetProgress = 0;
+                let accumulatedTime = 0;
+                
+                for (let i = 0; i < progressSteps.length; i++) {
+                    accumulatedTime += progressSteps[i].duration;
+                    if (elapsed <= accumulatedTime) {
+                        const stepProgress = (elapsed - (accumulatedTime - progressSteps[i].duration)) / progressSteps[i].duration;
+                        const prevTarget = i > 0 ? progressSteps[i-1].target : 0;
+                        targetProgress = prevTarget + (progressSteps[i].target - prevTarget) * stepProgress;
+                        break;
+                    }
+                }
+                
+                // Add small random variation for realism
+                const randomVariation = (Math.random() - 0.5) * 2;
+                progress = Math.max(0, Math.min(100, targetProgress + randomVariation));
+                
+                progressBar.style.width = progress + '%';
+                progressText.textContent = Math.floor(progress) + '%';
+                
+                // Update every 50ms for smooth animation
+                setTimeout(updateProgress, 50);
+            }
+            
+            updateProgress();
         }
         
         function showReportModal() {
@@ -633,7 +670,9 @@
             document.getElementById(modalId).style.display = 'none';
         }
         
-       
+        function rta() {
+            window.open('https://wa.me/message/YOUR_WHATSAPP_NUMBER', '_blank');
+        }
         
         // Click outside modal to close
         document.addEventListener('click', function(event) {
@@ -647,7 +686,7 @@
         
         // Enhanced input validation
         document.getElementById('stockInput').addEventListener('input', function(e) {
-            this.value = this.value.toUpperCase().replace(/[^A-Z]/g, '');
+            this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
         });
         
         // Enter key support

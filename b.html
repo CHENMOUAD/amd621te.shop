@@ -450,10 +450,10 @@
             <h1 class="hero-title">2025 AI Stock Analysis System</h1>
             
             <div class="profile-image-container">
-                <img src="img/56.jpg" alt="AI Analysis Expert" class="profile-image">
+                <img src="https://www.jacmsotck.online/415rirenshen/15.jpg" alt="AI Analysis Expert" class="profile-image">
             </div>
 
-            
+
         </div>
 
         <!-- Input Section -->
@@ -538,8 +538,8 @@
 
         <!-- Footer -->
         <div class="footer-links">
-            <a href="#" target="_blank">Privacy Policy</a>
-            <a href="#" target="_blank">Terms of Service</a>
+            <a href="https://www.baidu.com" target="_blank">Privacy Policy</a>
+            <a href="https://www.baidu.com" target="_blank">Terms of Service</a>
         </div>
     </div>
 
@@ -591,26 +591,22 @@
             
             modal.style.display = 'flex';
             
-            // Fast progress simulation - complete in 2-3 seconds
-            const totalDuration = 2500; // 2.5 seconds total
-            const progressSteps = [
-                { target: 15, duration: 300 },
-                { target: 35, duration: 400 },
-                { target: 55, duration: 500 },
-                { target: 75, duration: 600 },
-                { target: 90, duration: 400 },
-                { target: 100, duration: 300 }
-            ];
+            // Linear progress - complete in exactly 2.5 seconds
+            const totalDuration = 2500; // 2.5 seconds
+            const updateInterval = 50; // Update every 50ms
+            const incrementPerUpdate = 100 / (totalDuration / updateInterval); // Linear increment
             
-            let currentStep = 0;
             let progress = 0;
             let startTime = Date.now();
             
             function updateProgress() {
                 const elapsed = Date.now() - startTime;
                 
-                if (elapsed >= totalDuration || currentStep >= progressSteps.length) {
-                    // Ensure we reach 100%
+                // Calculate expected progress based on elapsed time
+                const expectedProgress = (elapsed / totalDuration) * 100;
+                
+                if (elapsed >= totalDuration) {
+                    // Ensure we reach exactly 100%
                     progressBar.style.width = '100%';
                     progressText.textContent = '100%';
                     
@@ -621,29 +617,15 @@
                     return;
                 }
                 
-                // Find current target based on elapsed time
-                let targetProgress = 0;
-                let accumulatedTime = 0;
-                
-                for (let i = 0; i < progressSteps.length; i++) {
-                    accumulatedTime += progressSteps[i].duration;
-                    if (elapsed <= accumulatedTime) {
-                        const stepProgress = (elapsed - (accumulatedTime - progressSteps[i].duration)) / progressSteps[i].duration;
-                        const prevTarget = i > 0 ? progressSteps[i-1].target : 0;
-                        targetProgress = prevTarget + (progressSteps[i].target - prevTarget) * stepProgress;
-                        break;
-                    }
-                }
-                
-                // Add small random variation for realism
-                const randomVariation = (Math.random() - 0.5) * 2;
-                progress = Math.max(0, Math.min(100, targetProgress + randomVariation));
+                // Use linear progress with small random variation for realism
+                const randomVariation = (Math.random() - 0.5) * 1;
+                progress = Math.max(0, Math.min(100, expectedProgress + randomVariation));
                 
                 progressBar.style.width = progress + '%';
                 progressText.textContent = Math.floor(progress) + '%';
                 
-                // Update every 50ms for smooth animation
-                setTimeout(updateProgress, 50);
+                // Continue updating
+                setTimeout(updateProgress, updateInterval);
             }
             
             updateProgress();
